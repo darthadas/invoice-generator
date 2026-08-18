@@ -256,7 +256,7 @@ Your invoice data never leaves your browser.
       total += qty * price;
     });
     document.getElementById("totalAmount").innerText =
-      currency + total.toFixed(2);
+      currency + formatNumber(total);
   }
 
   function generateInvoice() {
@@ -281,8 +281,8 @@ Your invoice data never leaves your browser.
         <tr>
           <td style="padding:10px;border-bottom:1px solid #f0f0f0">${desc}</td>
           <td style="padding:10px;border-bottom:1px solid #f0f0f0;text-align:center">${qty}</td>
-          <td style="padding:10px;border-bottom:1px solid #f0f0f0;text-align:right">${currency}${price.toFixed(2)}</td>
-          <td style="padding:10px;border-bottom:1px solid #f0f0f0;text-align:right">${currency}${subtotal.toFixed(2)}</td>
+          <td style="padding:10px;border-bottom:1px solid #f0f0f0;text-align:right">${currency}${formatNumber(price)}</td>
+          <td style="padding:10px;border-bottom:1px solid #f0f0f0;text-align:right">${currency}${formatNumber(subtotal)}</td>
         </tr>`;
     });
 
@@ -311,7 +311,7 @@ Your invoice data never leaves your browser.
         </tr></thead>
         <tbody>${itemRows}</tbody>
       </table>
-      <div class="total-section">Total: <strong>${currency}${total.toFixed(2)}</strong></div>
+      <div class="total-section">Total: <strong>${currency}${formatNumber(total)}</strong></div>
       <div class="footer">Generated with Adas — darthadas.github.io</div>
       </body></html>`;
 
