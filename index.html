@@ -155,7 +155,7 @@ Your invoice data never leaves your browser.
 
   <!-- From / To -->
   <div class="card no-print">
-    <h2>From & To</h2>
+    <h2>To & From</h2>
     <div class="row">
       <div class="field">
         <label>Your Name / Business</label>
@@ -316,6 +316,13 @@ Your invoice data never leaves your browser.
       </body></html>`;
 
     return invoiceHTML;
+  }
+
+  function formatNumber(num) {
+    return parseFloat(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
   }
 
   function downloadInvoice() {
