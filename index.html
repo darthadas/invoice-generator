@@ -291,6 +291,20 @@ Your invoice data never leaves your browser.
 
   document.getElementById("invoice").value = "INV-" + Date.now().toString().slice(-6);
 
+  // Load saved user details
+  const savedFields = ["fromName", "fromEmail", "fromPhone", "fromAddress"];
+  savedFields.forEach(id => {
+    const saved = localStorage.getItem(id);
+    if (saved) document.getElementById(id).value = saved;
+  });
+
+  // Save user details on input
+  savedFields.forEach(id => {
+    document.getElementById(id).addEventListener("input", function() {
+      localStorage.setItem(id, this.value);
+    });
+  });
+
   // Add first item on load
   addItem();
 
