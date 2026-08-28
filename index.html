@@ -353,7 +353,6 @@ Your invoice data never leaves your browser.
       subtotal += qty * price;
     });
     const taxRate = parseFloat(document.getElementById("taxRate").value) || 0;
-    const notes = document.getElementById("notes").value || "";
     const taxAmount = subtotal * (taxRate / 100);
     const total = subtotal + taxAmount;
     document.getElementById("subtotalAmount").innerText = currency + formatNumber(subtotal);
@@ -373,6 +372,7 @@ Your invoice data never leaves your browser.
     const dueDate = document.getElementById("dueDate").value || "";
     const invoiceNum = document.getElementById("invoice").value;
     const taxRate = parseFloat(document.getElementById("taxRate").value) || 0;
+    const notes = document.getElementById("notes").value || "";
 
     let itemRows = "";
     let subtotal = 0;
