@@ -270,6 +270,20 @@ Your invoice data never leaves your browser.
     </div>
   </div>
 
+   <!-- Notes -->
+  <div class="card no-print">
+    <h2>Notes & Payment Instructions</h2>
+    <div class="row">
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="notes" placeholder="Payment due within 14 days. Please transfer to Bank Account: XXXX"
+          style="padding:10px; border:1px solid #ddd; border-radius:6px;
+                 font-size:0.95rem; font-family:Arial,sans-serif;
+                 resize:vertical; min-height:80px; width:100%;"></textarea>
+      </div>
+    </div>
+  </div>
+
   <!-- Actions -->
   <div class="no-print">
     <button class="generate-btn" onclick="downloadInvoice()">
@@ -339,6 +353,7 @@ Your invoice data never leaves your browser.
       subtotal += qty * price;
     });
     const taxRate = parseFloat(document.getElementById("taxRate").value) || 0;
+    const notes = document.getElementById("notes").value || "";
     const taxAmount = subtotal * (taxRate / 100);
     const total = subtotal + taxAmount;
     document.getElementById("subtotalAmount").innerText = currency + formatNumber(subtotal);
@@ -419,6 +434,14 @@ Your invoice data never leaves your browser.
         ${taxRate > 0 ? `<p>Tax/VAT (${taxRate}%): ${currency}${formatNumber(subtotal * taxRate / 100)}</p>` : ""}
         <p>Total: <strong>${currency}${formatNumber(subtotal + subtotal * taxRate / 100)}</strong></p>
       </div>
+      ${notes ? `
+      <div style="margin-top:40px; padding:16px; background:#f9f9f9;
+                  border-radius:6px; font-size:0.9rem; color:#555; line-height:1.6;">
+        <strong style="display:block; margin-bottom:8px; color:#333;">
+          Notes & Payment Instructions
+        </strong>
+        ${notes}
+      </div>` : ""}
       <div class="footer">Generated with Adas — darthadas.github.io</div>
       </body></html>`;
 
