@@ -440,7 +440,7 @@ Your invoice data never leaves your browser.
         <strong style="display:block; margin-bottom:8px; color:#333;">
           Notes & Payment Instructions
         </strong>
-        ${notes}
+        ${notes.replace(/\n/g, "<br>")}
       </div>` : ""}
       <div class="footer">Generated with Adas — darthadas.github.io</div>
       </body></html>`;
