@@ -298,6 +298,8 @@ Your invoice data never leaves your browser.
       Print Invoice
     </button>
   </div>
+    <!-- Invoice History -->
+  <div id="invoiceHistory" style="display:none;"></div>
 </div>
 
 <script>
@@ -323,6 +325,7 @@ Your invoice data never leaves your browser.
 
   // Add first item on load
   addItem();
+  renderHistory();
 
   function addItem() {
     const container = document.getElementById("itemsContainer");
