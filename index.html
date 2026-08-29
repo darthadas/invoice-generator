@@ -476,6 +476,40 @@ function downloadInvoice() {
       .replace("</body></html>", "");
     document.body.appendChild(container);
 
+        // Save invoice to history
+    const invoiceData = {
+      invoiceNum: document.getElementById("invoice").value,
+      fromName: document.getElementById("fromName").value,
+      fromEmail: document.getElementById("fromEmail").value,
+      fromPhone: document.getElementById("fromPhone").value,
+      fromAddress: document.getElementById("fromAddress").value,
+      toName: document.getElementById("toName").value,
+      toAddress: document.getElementById("toAddress").value,
+      invoiceDate: document.getElementById("invoiceDate").value,
+      dueDate: document.getElementById("dueDate").value,
+      currency: document.getElementById("currency").value,
+      taxRate: document.getElementById("taxRate").value,
+      notes: document.getElementById("notes").value,
+      items: [],
+      total: document.getElementById("totalAmount").innerText,
+      savedAt: new Date().toISOString()
+    };
+
+    document.querySelectorAll(".item-row").forEach(row => {
+      const inputs = row.querySelectorAll("input");
+      invoiceData.items.push({
+        desc: inputs[0].value,
+        qty: inputs[1].value,
+        price: inputs[2].value
+      });
+    });
+
+    let history = JSON.parse(localStorage.getItem("invoiceHistory") || "[]");
+    history.unshift(invoiceData); // add to front
+    if (history.length > 50) history = history.slice(0, 50); // keep last 50
+    localStorage.setItem("invoiceHistory", JSON.stringify(history));
+    renderHistory();
+
     // Show loading state
     const btn = document.querySelector(".generate-btn");
     btn.innerText = "Generating PDF...";
