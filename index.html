@@ -457,6 +457,120 @@ Your invoice data never leaves your browser.
     });
   }
 
+    function renderHistory() {
+    const history = JSON.parse(localStorage.getItem("invoiceHistory") || "[]");
+    const container = document.getElementById("invoiceHistory");
+
+    if (history.length === 0) {
+      container.style.display = "none";
+      return;
+    }
+
+    container.style.display = "block";
+    container.innerHTML = `
+      <div class="card" style="margin-top:20px;">
+        <h2>Invoice History</h2>
+        <p style="font-size:0.8rem; color:#aaa; margin-bottom:16px;">
+          Click any invoice to reload it
+        </p>
+        ${history.map((inv, index) => `
+          <div onclick="loadInvoice(${index})" style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:12px;
+            border-radius:6px;
+            margin-bottom:8px;
+            background:#f9f9f9;
+            cursor:pointer;
+            border:1px solid #eee;
+            transition: border-color 0.2s;
+          " onmouseover="this.style.borderColor='#4CAF50'"
+             onmouseout="this.style.borderColor='#eee'">
+            <div>
+              <span style="font-weight:bold; color:#333;">
+                ${inv.invoiceNum}
+              </span>
+              <span style="color:#888; font-size:0.85rem; margin-left:10px;">
+                ${inv.toName || "No client"}
+              </span>
+            </div>
+            <div style="text-align:right;">
+              <span style="color:#4CAF50; font-weight:bold;">
+                ${inv.total}
+              </span>
+              <span style="color:#aaa; font-size:0.75rem; display:block;">
+                ${inv.invoiceDate}
+              </span>
+            </div>
+          </div>
+        `).join("")}
+        <button onclick="clearHistory()" style="
+          margin-top:8px;
+          background:none;
+          border:none;
+          color:#e74c3c;
+          font-size:0.8rem;
+          cursor:pointer;
+          padding:4px 0;
+        ">Clear history</button>
+      </div>
+    `;
+  }
+
+  function loadInvoice(index) {
+    const history = JSON.parse(localStorage.getItem("invoiceHistory") || "[]");
+    const inv = history[index];
+    if (!inv) return;
+
+    // Restore all fields
+    document.getElementById("invoice").value = inv.invoiceNum;
+    document.getElementById("fromName").value = inv.fromName;
+    document.getElementById("fromEmail").value = inv.fromEmail;
+    document.getElementById("fromPhone").value = inv.fromPhone;
+    document.getElementById("fromAddress").value = inv.fromAddress;
+    document.getElementById("toName").value = inv.toName;
+    document.getElementById("toAddress").value = inv.toAddress;
+    document.getElementById("invoiceDate").value = inv.invoiceDate;
+    document.getElementById("dueDate").value = inv.dueDate;
+    document.getElementById("currency").value = inv.currency;
+    document.getElementById("taxRate").value = inv.taxRate;
+    document.getElementById("notes").value = inv.notes;
+
+    // Restore items
+    const container = document.getElementById("itemsContainer");
+    container.innerHTML = "";
+    inv.items.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        <input placeholder="Service or product description"
+               oninput="updateTotal()" value="${item.desc}">
+        <input type="number" placeholder="1" min="1"
+               oninput="updateTotal()" value="${item.qty}">
+        <input type="number" placeholder="0.00" min="0" step="0.01"
+               oninput="updateTotal()" value="${item.price}">
+        <button class="remove-btn" onclick="removeItem(this)">×</button>
+      `;
+      container.appendChild(row);
+    });
+
+    updateTotal();
+
+    // Scroll to top
+    window.scrollTo({top: 0, behavior: "smooth"});
+
+    // Show confirmation
+    alert(`Invoice ${inv.invoiceNum} loaded. You can now edit and re-download.`);
+  }
+
+  function clearHistory() {
+    if (confirm("Clear all invoice history? This cannot be undone.")) {
+      localStorage.removeItem("invoiceHistory");
+      renderHistory();
+    }
+  }
+
 function downloadInvoice() {
     const date = document.getElementById("invoiceDate").value;
     const to = document.getElementById("toName").value || "Client Name";
