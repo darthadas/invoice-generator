@@ -400,7 +400,7 @@ Your invoice data never leaves your browser.
       <meta charset="UTF-8">
       <title>Invoice — ${to}</title>
       <style>
-        body{font-family:Arial,sans-serif;max-width:700px;margin:40px auto;color:#333;padding:20px 40px}
+        body{font-family:Arial,sans-serif;width:100%;max-width:100%;margin:20px auto;color:#333;padding:20px 30px;box-sizing:border-box;}
         .header{display:flex;justify-content:space-between;margin-bottom:40px}
         h1{color:#4CAF50;font-size:2rem}
         table{width:100%;border-collapse:collapse;margin-top:24px}
@@ -467,7 +467,8 @@ function downloadInvoice() {
     container.style.position = "fixed";
     container.style.left = "-9999px";
     container.style.top = "0";
-    container.style.width = "794px"; // A4 width in pixels at 96dpi
+    container.style.width = "740px";
+    container.style.padding = "0 20px";
     container.style.background = "white";
     container.innerHTML = generateInvoice()
       .replace("<!DOCTYPE html><html><head>", "")
