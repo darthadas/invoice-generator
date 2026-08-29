@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <title>Free Invoice Generator — No Signup Required</title>
   <meta name="description" content="Create and download professional invoices free. No signup, no ads, no limits. Simple online invoice generator.">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2052705064706779"
@@ -455,17 +457,53 @@ Your invoice data never leaves your browser.
     });
   }
 
-  function downloadInvoice() {
+function downloadInvoice() {
     const date = document.getElementById("invoiceDate").value;
     const to = document.getElementById("toName").value || "Client Name";
-    const invoiceHTML = generateInvoice();
-    const blob = new Blob([invoiceHTML], {type: "text/html"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `invoice-${to.replace(/\s+/g, "-")}-${date}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const invoiceNum = document.getElementById("invoice").value;
+
+    // Create a hidden div with the invoice HTML
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.style.width = "794px"; // A4 width in pixels at 96dpi
+    container.style.background = "white";
+    container.innerHTML = generateInvoice()
+      .replace("<!DOCTYPE html><html><head>", "")
+      .replace("</head><body>", "")
+      .replace("</body></html>", "");
+    document.body.appendChild(container);
+
+    // Show loading state
+    const btn = document.querySelector(".generate-btn");
+    btn.innerText = "Generating PDF...";
+    btn.disabled = true;
+
+    html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    }).then(canvas => {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${invoiceNum}-${to.replace(/\s+/g, "-")}-${date}.pdf`);
+
+      // Cleanup
+      document.body.removeChild(container);
+      btn.innerText = "Download Invoice";
+      btn.disabled = false;
+    });
   }
 
   function printInvoice() {
